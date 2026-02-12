@@ -1,12 +1,12 @@
 {
-  "name": "nodejs-argo",
-  "version": "1,0,0",
-  "description": "Thsi is a node project",
+  "name": "vt",
+  "version": "1.0.0",
+  "description": "Node.js deploy script for Argo Tunnel and Nezha Agent",
   "main": "index.js",
-  "author": "eooce",
-  "repository": "",
+  "author": "sz30",
+  "repository": "https://github.com/sz30/vt",
   "license": "MIT",
-  "private": false,
+  "private": true,
   "scripts": {
     "dev": "node index.js",
     "start": "node index.js"
