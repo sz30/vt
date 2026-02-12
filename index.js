@@ -11,7 +11,7 @@ const PROJECT_URL = process.env.PROJECT_URL || '';    // 需要上传订阅或�
 const AUTO_ACCESS = process.env.AUTO_ACCESS || false; // false关闭自动保活，true开启,需同时填写PROJECT_URL变量
 const FILE_PATH = process.env.FILE_PATH || '.tmp';   // 运行目录,sub节点文件保存目录
 const SUB_PATH = process.env.SUB_PATH || 'sub';       // 订阅路径
-const PORT = process.env.SERVER_PORT || process.env.PORT || 3000;        // http服务订阅端口
+const PORT = process.env.SERVER_PORT || process.env.PORT || 3001;        // http服务订阅端口
 const UUID = process.env.UUID || '9afd1229-b893-40c1-84dd-51e7ce204913'; // 使用哪吒v1,在不同的平台运行需修改UUID,否则会覆盖
 const NEZHA_SERVER = process.env.NEZHA_SERVER || '';        // 哪吒v1填写形式: nz.abc.com:8008  哪吒v0填写形式：nz.abc.com
 const NEZHA_PORT = process.env.NEZHA_PORT || '';            // 使用哪吒v1请留空，哪吒v0需填写
@@ -431,6 +431,7 @@ async function extractDomains() {
       }
     } catch (error) {
       console.error('Error reading boot.log:', error);
+    }
   }
 }
 
@@ -483,7 +484,6 @@ trojan://${UUID}@${CFIP}:${CFPORT}?security=tls&sni=${argoDomain}&fp=firefox&typ
       }, 2000);
     });
   }
-}
 
 // 自动上传节点或订阅
 async function uploadNodes() {
