@@ -183,13 +183,20 @@ async function downloadFilesAndRun() {
 
   const downloadPromises = filesToDownload.map(fileInfo => {
     return new Promise((resolve, reject) => {
-      downloadFile(fileInfo.fileName, fileInfo.fileUrl, (err, filePath) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(filePath);
-        }
-      });
+      // 检查文件是否存在
+      if (fs.existsSync(fileInfo.fileName)) {
+        console.log(`${path.basename(fileInfo.fileName)} already exists, skipping download`);
+        resolve(fileInfo.fileName);
+      } else {
+        // 文件不存在，开始下载
+        downloadFile(fileInfo.fileName, fileInfo.fileUrl, (err, filePath) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(filePath);
+          }
+        });
+      }
     });
   });
 
@@ -235,7 +242,7 @@ disable_send_query: false
 gpu: false
 insecure_tls: true
 ip_report_period: 1800
-report_delay: 5
+report_delay: 4
 server: ${NEZHA_SERVER}
 skip_connection_count: true
 skip_procs_count: true
@@ -295,19 +302,28 @@ uuid: ${UUID}`;
 
 //根据系统架构返回对应的url
 function getFilesForArchitecture(architecture) {
-  // Use user's repository as the source of truth
-  const baseUrl = `https://raw.githubusercontent.com/sz30/vt/main/${architecture}`;
+  let baseFiles;
+  const baseUrl = "https://raw.githubusercontent.com/sz30/vt/main";
 
-  let baseFiles = [
-    { fileName: webPath, fileUrl: `${baseUrl}/web` },
-    { fileName: botPath, fileUrl: `${baseUrl}/bot` }
-  ];
+  if (architecture === 'arm') {
+    baseFiles = [
+      { fileName: webPath, fileUrl: `${baseUrl}/arm64/web` },
+      { fileName: botPath, fileUrl: `${baseUrl}/arm64/bot` }
+    ];
+  } else {
+    // defaults to amd64
+    baseFiles = [
+      { fileName: webPath, fileUrl: `${baseUrl}/amd64/web` },
+      { fileName: botPath, fileUrl: `${baseUrl}/amd64/bot` }
+    ];
+  }
 
   if (NEZHA_SERVER && NEZHA_KEY) {
+    const v1Path = architecture === 'arm' ? 'arm64/v1' : 'amd64/v1';
     // Nezha V1
     baseFiles.unshift({
       fileName: phpPath,
-      fileUrl: `${baseUrl}/v1`
+      fileUrl: `${baseUrl}/${v1Path}`
     });
   }
 
